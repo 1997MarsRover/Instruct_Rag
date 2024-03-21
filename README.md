@@ -21,14 +21,32 @@ There are four stages in a Rag Pipeline: Ingest, Embed, Retrieve, and Answer. Th
 #### **Initial steps**
 
 1. Git clone this repo
-
-2. Setup conda environment or venv. Your choice (Optional)
    
-3. Pip install all the requirements in requirements.txt
+```bash
+git clone https://github.com/koleshjr/Unifi_Instruct_Rag.git
+```
+
+3. Setup conda environment or venv. Your choice (Optional)
+   
+4. Pip install all the requirements in requirements.txt
+   
+```bash
+pip install -r requirements.txt
+```
+
 
 #### **Ingest and Embed**
 
+Download the dataset from kaggle.
+```bash
+kaggle datasets download -d antonygithinji/unifi-value-frameworks-pdf-lifting
+```
+
 Run index.py and pass specified CLI arguments. Specifically:
+
+```bash
+python3 index.py --vector_store faiss --index_name faiss_db --embedding_provider Hugging Face
+```
 
    a) --vector_store: at the moment the project supports chroma, Milvus, and faiss e.g. faiss
    
@@ -39,6 +57,10 @@ Run index.py and pass specified CLI arguments. Specifically:
 #### **Retrieve and Answer**
 
 Run main.py and pass the specified CLI arguments. Specifically:
+
+```bash
+python3 main.py --vector_store faiss --index_name faiss_db --model_provider  OpenaAi --embedding_provider Hugging Face --year 2022 --experinment experinment one
+```
 
    a) --vector_store: the vector database you used in the ingest and embed stage e.g. faiss
    
