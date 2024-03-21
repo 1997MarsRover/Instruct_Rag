@@ -5,6 +5,8 @@ from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAI
 from dotenv import load_dotenv
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 from langchain_openai import AzureOpenAI
+from llama.cpp import LLama
+from huggingface_hub import hf_hub_download
 
 class Llms:
     def __init__(self, model_provider: str, model_name: Optional[str] = None):
@@ -35,6 +37,17 @@ class Llms:
                 })
         elif self.model_provider == 'azure':
             return AzureOpenAI(deployment_name = "gpt-35-turbo", model_name = "gpt-3.5-turbo-1106")
+        elif self.model_provider == 'mistral':
+            mistral_path = "TheBloke/Mistral-7B-Instruct-v0.2-GGUF"
+            mistral_q4_basename = "mistral-7b-instruct-v0.2.Q4_K_M.gguf"
+            model_path = hf_hub_download(repo_id=mistral_path, filename=mistral_q4_basename)
+            return Llama(
+                        model_path=model_path,
+                        n_gpu_layers=--1, # The number of layers to put on the GPU. The rest will be on the CPU. If you don't know how many layers there are, you can use -1 to move all
+                        n_batch = 2048, # Should be between 1 and n_ctx, consider the amount of VRAM in your GPU.
+                        n_ctx=2048,
+                        logits_all=False,
+                            )
         else:
             raise Exception("Invalid model provider we currently support only openai, azure and google models")
         
